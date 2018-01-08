@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="digital.dao.BoardManageDao">
+	<resultMap type="boardManage" id="boardManageMap">
+		<id column="bdno" property="boardNo" />
+		<result column="bdmanager" property="boardManager" />
+		<result column="bdtype" property="boardType" />
+		<result column="bddate" property="boardCreateDay" />
+		<result column="bdupdate" property="boardUpdateDay" />
+		<result column="bdcomment" property="boardComment" />
+		<result column="delchk" property="deleteCheck" />
+	</resultMap>
+
+	<select id="list" resultMap="boardManageMap" parameterType="map">
+		SELECT SQL_CALC_FOUND_ROWS A.* FROM(
+		SELECT bdno, bdmanager, bdtype, bddate, bdupdate, bdcomment, delchk
+		FROM board
+		ORDER BY bdno desc)A
+		LIMIT #{start}, #{end}
+	</select>
+
+	<select id="count" resultType="int">
+		SELECT count(*) from board
+	</select>
+
+	<insert id="insert" parameterType="boardManage" useGeneratedKeys="true" keyColumn="bdno">
+		INSERT INTO board(bdmanager, bdtype, bddate, bdupdate, bdcomment, delchk)
+		VALUES(#{boardManager},
+		#{boardType}, now(), now(), #{boardComment}, default)
+	</insert>
+  
+  <update id="update" parameterType="boardManage">
+    UPDATE board SET
+    bdcomment = #{boardComment}
+    WHERE bdno = #{boardNo}
+  </update>
+  
+	<update id="delete" parameterType="int">
+		UPDATE board
+		SET
+		delchk = 'Y'
+		WHERE bdno = #{boardNo}
+	</update>
+</mapper>

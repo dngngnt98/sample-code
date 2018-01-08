@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="digital.dao.BoardDao">
+	<resultMap type="board" id="boardMap">
+		<id column="bdno" property="boardNo" />
+		<result column="bdtype" property="boardType" />
+		<result column="bdsubject" property="boardSubject" />
+		<result column="bdcontent" property="boardContent" />
+		<result column="bddate" property="boardCreateDay" />
+		<result column="bdupdate" property="boardUpdateDay" />
+		<result column="hit" property="boardHit" />
+		<result column="delchk" property="deleteCheck" />
+		<collection property="uploadList">
+			<result column="filename" property="fileName" />
+			<result column="newfilename" property="newFileName" />
+			<result column="filepath" property="filePath" />
+		</collection>
+	</resultMap>
+
+	<select id="list" resultMap="boardMap" resultType="board" parameterType="hashmap">
+		SELECT SQL_CALC_FOUND_ROWS A.* FROM(
+		SELECT b.bdno,bdtype,bdsubject,bdcontent,bddate,bdupdate,b.delchk,hit,filename,newfilename,filepath
+		FROM board b LEFT JOIN board_file bf
+		ON b.bdno = bf.bdno
+		ORDER BY b.bdno DESC)A
+		LIMIT #{start}, #{end}
+	</select>
+
+	<select id="count" resultType="integer">
+		SELECT COUNT(*) FROM board
+	</select>
+
+	<insert id="insert" parameterType="board" useGeneratedKeys="true" keyProperty="boardNo">
+		INSERT INTO board(bdno,bdtype,bdsubject,bdcontent,bddate,bdupdate,delchk,hit)
+		VALUES(#{boardNo},default,#{boardSubject},#{boardContent},now(),now(),default,default)
+	</insert>
+
+	<!-- <update id="update" parameterType="template"> UPDATE board SET bdSubject 
+		= #{boardSubject}, bdContent = #{boardContent}, tpudate = now() WHERE tpno 
+		= #{templateNo} </update> <update id="delete" parameterType="int"> UPDATE 
+		board SET delchk = 'Y' WHERE bdno = #{boardNo} </update> -->
+
+	<insert id="insertFile" parameterType="map">
+		INSERT INTO board_file(bdno,filename,newfilename,bfdate,delchk,filepath)
+		VALUES(#{boardNo},#{fileName},#{newFileName},now(),default,#{filePath})
+	</insert>
+</mapper>

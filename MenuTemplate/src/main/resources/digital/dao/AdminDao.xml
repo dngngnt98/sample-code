@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="digital.dao.AdminDao">
+	<resultMap type="admin" id="adminMap">
+		<id column="adno" property="adminNo" />
+		<result column="adpwd" property="adminPassword" />
+		<result column="admail" property="adminMail" />
+		<result column="adname" property="adminName" />
+		<result column="addate" property="adminDate" />
+		<result column="adgrade" property="adminGrade" />
+	</resultMap>
+
+	<select id="selectOneByEmailPassword" resultMap="adminMap"
+		parameterType="map">
+		SELECT adno, admail, adname, addate, adgrade
+		FROM admin
+		WHERE admail = #{adminMail} AND adpwd = #{adminPassword}
+	</select>
+
+	<insert id="insert" parameterType="admin">
+		INSERT INTO admin(adno, admail, adpwd, adname, addate)
+		VALUES(#{adminNo}, #{adminMail}, #{adminPassword}, #{adminName}, now())
+	</insert>
+
+	<!-- <delete id="delete" parameterType="int"> delete from branch_master 
+		where bmno=#{branchmasterNo} </delete> <update id="update" parameterType="branchMaster"> 
+		update branch_master set bmno = #{no}, bmname = #{name}, bmtel = #{tel}, 
+		bmemail = #{email}, bmpwd = password(#{password}, bmfbid = #{facebook}, bmgrade 
+		= #{grade} where bmno=#{no} </update> -->
+
+</mapper>

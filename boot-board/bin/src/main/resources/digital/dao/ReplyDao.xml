@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="digital.dao.ReplyDao">
+    <resultMap type="reply" id="replyMap">
+        <id column="rno" property="replyNo"/>
+        <result column="bdno" property="boardNo"/>
+        <result column="rcontent" property="replyContent"/>
+        <result column="replyer" property="replyer"/>
+        <result column="rdate" property="replyDate"/>
+        <result column="rudate" property="replyUpDate"/>
+    </resultMap>
+    
+    <select id="list" resultType="reply">
+        SELECT rno, bdno, rcontent, replyer, rdate, rudate
+        FROM reply r, branch_master bm
+        WHERE r.replyer = bm.bmemail AND bdno = #{bdno}
+        ORDER BY rno
+    </select>
+    
+    <insert id="insert" useGeneratedKeys="true" keyProperty="replyNo" keyColumn="rno">
+        INSERT INTO reply(rno, bdno, rcontent, replyer)
+        VAULES(#{replyNo},#{boardNo}, #{replyContent}, #{replyer})
+    </insert>
+    
+</mapper>

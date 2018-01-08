@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="digital.dao.UploadDao">
+	<resultMap type="upload" id="uploadMap">
+		<id column="mino" property="uploadNo" />
+		<result column="bdno" property="boardNo" />
+		<result column="mno" property="menuNo" />
+		<result column="ori_file_name" property="fileName" />
+		<result column="save_file_name" property="newFileName" />
+		<result column="mi_date_time" property="uploadDate" />
+		<result column="mi_udate_time" property="updateDate" />
+		<result column="delchk" property="delCheck" />
+	</resultMap>
+    
+    <select id="fileList" parameterType="map">
+        SELECT f.fmno, b.bdno, f.ori_file_name, f.save_file_name, f.fm_date_time, f.fm_udate_time, save_user_name,delchk
+        FROM file_mgr f LEFT JOIN board b
+    </select>
+    
+	<insert id="insert" parameterType="upload">
+		INSERT INTO file_mgr(mino, mno, ori_file_name,save_file_name,mi_date_time,mi_udate_time,delchk)
+		  VALUES(#{uploadNo}, #{menuNo},#{fileName},#{newFileName},now(),now(),DEFAULT) 
+	</insert>
+	
+	
+
+</mapper>

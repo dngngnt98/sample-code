@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="digital.dao.MenuDao">
+	<resultMap type="Menu" id="menuMap">
+		<id column="mno" property="memuNo" />
+		<result column="mtype" property="menuType" />
+		<result column="mname" property="menuName" />
+		<result column="mprice" property="menuPrice" />
+		<result column="mcontent" property="menuContent" />
+		<result column="mmgr" property="menuManager" />
+		<result column="mkcal" property="menuKcal" />
+		<result column="mdate" property="menuDate" />
+		<result column="mudate" property="menuUdate" />
+		<result column="delchk" property="menuDel" />
+		<collection property="info" ofType="upload">
+		  <result column="ori_file_name"/>
+		</collection>
+	</resultMap>
+
+	<select id="list" resultMap="menuMap" parameterType="map">
+		SELECT SQL_CALC_FOUND_ROWS A.* FROM(
+		SELECT m.mno, m.mtype, m.mname, m.mprice, m.mcontent, m.mkcal, m.mdate, m.mudate, m.delchk, mi.ori_file_name
+		FROM menu AS m LEFT OUTER JOIN menu_img AS mi
+		ON m.mno = mi.mno
+		ORDER BY mno DESC)A
+		LIMIT #{start}, #{end}
+	</select>
+
+	<select id="count" resultType="int">
+		SELECT COUNT(*) FROM menu
+	</select>
+
+	<insert id="insert" parameterType="menu">
+		INSERT INTO menu(mno, mtype, mname, mprice, mcontent, mkcal, mdate, mudate)
+		VALUES(#{menuNo},#{menuType},#{menuName},#{menuPrice},#{menuContent},#{menuKcal},default,default)
+	</insert>
+
+	<update id="update" parameterType="menu">
+		UPDATE menu SET
+		mname=#{menuName},
+		mprice=#{menuPrice},
+		mcontent=#{menuContent},
+		mkcal=#{menuKcal},
+		mudate=now()
+		mno=#{menuNo}
+	</update>
+
+	<update id="delete" parameterType="int">
+		UPDATE menu SET
+		delchk = 'Y'
+		WHERE menu=#{menuNo}
+	</update>
+</mapper>
